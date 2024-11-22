@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship and Exam Eligibility</title>
+    <script>
+        async function checkEligibility() {
+            const studentID = document.getElementById("studentID").value;
+            const urlEligibility = `http://localhost:8080/eligibility`;
+            const urlExam = `http://localhost:8080/debarred`;
+
+            // Check Scholarship Eligibility
+            const response1 = await fetch(urlEligibility, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ student_id: studentID }),
+            });
+            const data1 = await response1.json();
+
+            // Check Exam Permission
+            const response2 = await fetch(urlExam, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ student_id: studentID }),
+            });
+            const data2 = await response2.json();
+
+            // Display Results
+            document.getElementById("result").innerHTML = `
+                Scholarship Status: ${data1.scholarship}<br>
+                Exam Permission: ${data2.exam_permission}
+            `;
+        }
+    </script>
+</head>
+<body>
+    <h1>Check Eligibility</h1>
+    <label for="studentID">Enter Student ID:</label>
+    <input type="text" id="studentID">
+    <button onclick="checkEligibility()">Check</button>
+    <p id="result"></p>
+</body>
+</html>
